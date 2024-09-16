@@ -40,7 +40,7 @@ for i in range(len(circle_levels)):
 	for j in range(len(circle_levels[i])):
 		circle_levels[i][j] = Circle(circle_levels[i][j][0], circle_levels[i][j][1], circle_levels[i][j][2], letters[j], exam)
 
-	circle_levels[i] = Question(circle_levels[i], 0, exam)
+	circle_levels[i] = Question(circle_levels[i], circle_levels[i][0], exam)
 for level in circle_levels:
 	level.draw_question()
 
@@ -49,6 +49,10 @@ print(f"is filled? {circle_levels[0].get_option(0).is_filled()}")
 
 exam2 = Exam(circle_levels, questions, exam)
 exam2.draw_filled()
+exam2.find_chosen_answers()
+exam2.print_chosen_answers()
 cv2.imshow("exam", exam)
+
+
 
 cv2.waitKey(0)

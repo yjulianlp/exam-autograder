@@ -55,10 +55,10 @@ class Circle:
 
 class Question:
 
-	def __init__(self, question_options, answer_choice_index, exam_image):
+	def __init__(self, question_options, answer_choice, exam_image):
 		self.exam_image = exam_image
 		self.question_options = question_options #list of circles
-		self.answer_choice = answer_choice_index
+		self.answer_choice = answer_choice
 
 	def get_image(self):
 		return self.exam_image
@@ -93,6 +93,17 @@ class Question:
 			if(option.is_filled()):
 				option.draw(self.exam_image, option.get_radius(), 0, 0, 255, 3)
 
+	def find_chosen_answer(self):
+		for option in self.question_options:
+			if option.is_filled():
+				self.answer_choice = option
+				break
+
+	def get_chosen_answer(self):
+		return self.answer_choice.get_letter()
+
+
+
 class Exam:
 
 	def __init__(self, questions, num_questions, exam_image):
@@ -123,5 +134,12 @@ class Exam:
 
 	def draw_filled(self):
 		for question in self.questions:
-			print(type(question))
 			question.draw_filled()
+
+	def find_chosen_answers(self):
+		for question in self.questions:
+			question.find_chosen_answer()
+
+	def print_chosen_answers(self):
+		for i in range(len(self.questions)):
+			print(f"Examinee chose option {self.questions[i].get_chosen_answer()} for Question # {i+1}.")
