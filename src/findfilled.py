@@ -6,10 +6,11 @@ def get_level(circle_object):
 	return circle_object[1]
 def get_col(circle_object):
 	return circle_object[0]
+filename = input("Completed Exam Filename: ")
+questions = int(input("Number of Questions: "))
 
-questions = 5
 letters = ['A', 'B', 'C', 'D']
-exam = cv2.imread("../images/exam2.jpg")
+exam = cv2.imread(f"../images/{filename}.jpg")
 gray_exam = cv2.cvtColor(exam, cv2.COLOR_BGR2GRAY)
 blur = cv2.blur(gray_exam, (9,9))
 detected_circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, 30, param1=45, param2=135, minRadius=20, maxRadius=80)
