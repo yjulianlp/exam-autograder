@@ -88,10 +88,13 @@ class Question:
 	def set_options(self, options):
 		self.question_options = options
 
-	def draw_filled(self):
+	def draw_filled(self, correct=False):
 		for option in self.question_options:
 			if(option.is_filled()):
-				option.draw(self.exam_image, option.get_radius(), 0, 0, 255, 3)
+				if correct:
+					option.draw(self.exam_image, option.get_radius(), 0, 255, 0, 3)
+				else:
+					option.draw(self.exam_image, option.get_radius(), 0, 0, 255, 3)
 
 	def find_chosen_answer(self):
 		for option in self.question_options:
@@ -117,6 +120,16 @@ class Exam:
 	def set_image(self, image):
 		self.exam_image = image
 
+	def get_question(self, question_index):
+
+		if question_index >= len(self.questions): #if wrong index used
+			return self.questions[len(self.questions)-1]
+		return self.questions[question_index]
+
+	def set_question(self, question_index, new_question):
+
+		self.questions[question_index] = new_question
+
 	def add_question(self):
 		self.questions.append(question)
 
@@ -139,6 +152,12 @@ class Exam:
 	def find_chosen_answers(self):
 		for question in self.questions:
 			question.find_chosen_answer()
+
+	def get_chosen_answers(self):
+		chosen_answers = []
+		for i in range(len(self.questions)):
+			chosen_answers.append([i+1,self.questions[i].get_chosen_answer()])
+		return chosen_answers
 
 	def print_chosen_answers(self):
 		for i in range(len(self.questions)):

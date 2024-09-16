@@ -7,10 +7,15 @@ def get_level(circle_object):
 def get_col(circle_object):
 	return circle_object[0]
 letters = ['A', 'B', 'C', 'D']
-
+correct_answers = []
 filename = input("Completed Exam Filename: ")
 questions = int(input("Number of Questions: "))
+answer_key = input("Answer Key Filename (.csv): ")
 
+with open(f"../answer_key/{answer_key}.csv", "r+") as ans_key:
+	for ans in ans_key:
+		if not ans.isspace():
+			correct_answers.append(ans.strip().replace(" ", "").split(","))
 
 exam = cv2.imread(f"../images/{filename}.jpg")
 gray_exam = cv2.cvtColor(exam, cv2.COLOR_BGR2GRAY)
@@ -41,18 +46,27 @@ for i in range(len(circle_levels)):
 		circle_levels[i][j] = Circle(circle_levels[i][j][0], circle_levels[i][j][1], circle_levels[i][j][2], letters[j], exam)
 
 	circle_levels[i] = Question(circle_levels[i], circle_levels[i][0], exam)
+	"""
 for level in circle_levels:
-	level.draw_question()
+	level.draw_question()"""
 
 print(f"has value {circle_levels[0].get_option(0).get_letter()}")
 print(f"is filled? {circle_levels[0].get_option(0).is_filled()}")
 
 exam2 = Exam(circle_levels, questions, exam)
-exam2.draw_filled()
+#exam2.draw_filled()
 exam2.find_chosen_answers()
-exam2.print_chosen_answers()
+selected_answers = exam2.get_chosen_answers()
+
+total_correct = 0
+print(correct_answers)
+print(selected_answers)
+for i in range(len(correct_answers)):
+	if correct_answers[i][1].lower() == selected_answers[i][1].lower():
+		total_correct +=1
+		exam2.get_question(i).draw_filled(correct=True)
+	else:
+		exam2.get_question(i).draw_filled()
+
 cv2.imshow("exam", exam)
-
-
-
 cv2.waitKey(0)
