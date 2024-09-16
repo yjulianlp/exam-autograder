@@ -123,4 +123,5 @@ class Exam:
 
 	def draw_filled(self):
 		for question in self.questions:
+			print(type(question))
 			question.draw_filled()

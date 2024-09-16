@@ -6,10 +6,12 @@ def get_level(circle_object):
 	return circle_object[1]
 def get_col(circle_object):
 	return circle_object[0]
+letters = ['A', 'B', 'C', 'D']
+
 filename = input("Completed Exam Filename: ")
 questions = int(input("Number of Questions: "))
 
-letters = ['A', 'B', 'C', 'D']
+
 exam = cv2.imread(f"../images/{filename}.jpg")
 gray_exam = cv2.cvtColor(exam, cv2.COLOR_BGR2GRAY)
 blur = cv2.blur(gray_exam, (9,9))
@@ -19,12 +21,19 @@ circle_levels = []
 for j in range(questions):
 	circle_levels.append([])
 
-if len(detected_circles) > 0:
+num_detected = len(detected_circles[0])
+
+print(f"{num_detected} circles detected")
+
+if num_detected > 0 and num_detected == (len(letters)*questions):
 	circle_info = (np.uint16(np.around(detected_circles))).tolist()
 	circle_info[0] = sorted(circle_info[0],key=get_level) #sort by question
 
 	for i in range(len(circle_info[0])):
 		circle_levels[(i//4)].append(circle_info[0][i])
+else:
+	print("Please manually check and clean the exam image")
+	exit(-1)
 
 for i in range(len(circle_levels)):
 	circle_levels[i] = sorted(circle_levels[i], key=get_col)
