@@ -3,7 +3,7 @@ import numpy as np
 
 filename = input("Blank Exam Filename: ")
 questions = int(input("Number of Questions: "))
-blank = np.zeros((1000,500, 3), dtype="uint8")
+blank = np.zeros((150*questions ,500, 3), dtype="uint8")
 blank.fill(255)
 
 letters = ['A', 'B', 'C', 'D']

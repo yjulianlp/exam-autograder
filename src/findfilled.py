@@ -1,74 +1,12 @@
 import cv2
 import numpy as np
-from exam import Exam, Question, Circle
-
-def get_level(circle_object):
-	return circle_object[1]
-def get_col(circle_object):
-	return circle_object[0]
+from exam import Exam, Question, Circle, mark_exam
 
 letters = ['A', 'B', 'C', 'D']
-correct_answers = []
 
 #get filenames
 filename = input("Completed Exam Filename: ")
 questions = int(input("Number of Questions: "))
 answer_key = input("Answer Key Filename (.csv): ")
 
-#read answer key
-with open(f"../answer_key/{answer_key}.csv", "r+") as ans_key:
-	for ans in ans_key:
-		if not ans.isspace():
-			correct_answers.append(ans.strip().replace(" ", "").split(","))
-
-#detect answers
-exam = cv2.imread(f"../images/{filename}.jpg")
-gray_exam = cv2.cvtColor(exam, cv2.COLOR_BGR2GRAY)
-blur = cv2.blur(gray_exam, (9,9))
-detected_circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, 30, param1=45, param2=135, minRadius=20, maxRadius=80)
-
-circle_levels = []
-for j in range(questions):
-	circle_levels.append([])
-
-num_detected = len(detected_circles[0])
-
-print(f"{num_detected} circles detected")
-
-if num_detected > 0 and num_detected == (len(letters)*questions):
-	circle_info = (np.uint16(np.around(detected_circles))).tolist()
-	circle_info[0] = sorted(circle_info[0],key=get_level) #sort by question
-
-	for i in range(len(circle_info[0])):
-		circle_levels[(i//4)].append(circle_info[0][i])
-else:
-	print("Please manually check and clean the exam image")
-	exit(-1)
-
-for i in range(len(circle_levels)):
-	circle_levels[i] = sorted(circle_levels[i], key=get_col)
-	for j in range(len(circle_levels[i])):
-		circle_levels[i][j] = Circle(circle_levels[i][j][0], circle_levels[i][j][1], circle_levels[i][j][2], letters[j], exam)
-
-	circle_levels[i] = Question(circle_levels[i], circle_levels[i][0], exam)
-
-print(f"has value {circle_levels[0].get_option(0).get_letter()}")
-print(f"is filled? {circle_levels[0].get_option(0).is_filled()}")
-
-exam2 = Exam(circle_levels, questions, exam)
-exam2.find_chosen_answers()
-selected_answers = exam2.get_chosen_answers()
-
-total_correct = 0
-
-#compare answers
-for i in range(len(correct_answers)):
-	if correct_answers[i][1].lower() == selected_answers[i][1].lower():
-		total_correct +=1
-		exam2.get_question(i).draw_filled(correct=True) #green outline
-	else:
-		exam2.get_question(i).draw_filled() #red outline
-
-cv2.imshow("exam", exam)
-cv2.imwrite(f"../marked/{filename}-marked.jpg", exam)
-cv2.waitKey(0)
+mark_exam(filename, questions, answer_key)
