@@ -17,8 +17,9 @@ def mark_exam(filename, questions, answer_key):
 
 	#detect answers
 	exam = cv2.imread(f"../images/{filename}.jpg")
-	gray_exam = cv2.cvtColor(exam, cv2.COLOR_BGR2GRAY)
-	blur = cv2.blur(gray_exam, (9,9))
+	exam_template = cv2.imread(f"../images/{questions}questions_template.jpg")
+	gray_template = cv2.cvtColor(exam_template, cv2.COLOR_BGR2GRAY)
+	blur = cv2.blur(gray_template, (9,9))
 	detected_circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, 30, param1=45, param2=135, minRadius=20, maxRadius=80)
 
 	circle_levels = []
@@ -160,6 +161,7 @@ class Question:
 					option.draw(self.exam_image, option.get_radius(), 0, 0, 255, 3)
 
 	def find_chosen_answer(self):
+		#will go with first option considered filled
 		for option in self.question_options:
 			if option.is_filled():
 				self.answer_choice = option
