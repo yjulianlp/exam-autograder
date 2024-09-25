@@ -12,6 +12,7 @@ def mark_exam(filename, questions, answer_key, firstname, lastname, studentid):
 	correct_answers = []
 	#read answer key
 	with open(f"../answer_key/{answer_key}.csv", "r+") as ans_key:
+		next(ans_key) #skip first line
 		for ans in ans_key:
 			if not ans.isspace():
 				correct_answers.append(ans.strip().replace(" ", "").split(","))
