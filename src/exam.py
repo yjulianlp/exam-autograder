@@ -1,12 +1,13 @@
 import cv2 as cv2
 import numpy as np
+import json
 
 def get_level(circle_object):
 	return circle_object[1]
 def get_col(circle_object):
 	return circle_object[0]
 
-def mark_exam(filename, questions, answer_key):
+def mark_exam(filename, questions, answer_key, firstname, lastname, studentid):
 	letters = ['A', 'B', 'C', 'D']
 	correct_answers = []
 	#read answer key
@@ -47,7 +48,7 @@ def mark_exam(filename, questions, answer_key):
 
 		circle_levels[i] = Question(circle_levels[i], circle_levels[i][0], exam)
 
-	processed_exam = Exam(circle_levels, questions, exam)
+	processed_exam = Exam(circle_levels, questions, exam, firstname, lastname, studentid)
 	processed_exam.find_chosen_answers()
 	selected_answers = processed_exam.get_chosen_answers()
 
@@ -60,11 +61,17 @@ def mark_exam(filename, questions, answer_key):
 			processed_exam.get_question(i).draw_filled(correct=True) #green outline
 		else:
 			processed_exam.get_question(i).draw_filled() #red outline
-
-	cv2.imshow("marked exam", exam)
+	temp_json = {
+		"firstname":processed_exam.get_first_name(),
+		"lastname":processed_exam.get_last_name(),
+		"studentid":processed_exam.get_student_id(),
+		"score":total_correct,
+		"selected_answers":processed_exam.get_answers_json()
+	}
+	temp_json = json.dumps(temp_json)
 	cv2.imwrite(f"../marked/{filename}-marked.jpg", exam)
-	cv2.waitKey(0)
 
+	return temp_json
 
 class Circle:
 	def __init__(self, x, y, radius, letter, exam_image):
@@ -161,7 +168,7 @@ class Question:
 					option.draw(self.exam_image, option.get_radius(), 0, 0, 255, 3)
 
 	def find_chosen_answer(self):
-		#will go with first option considered filled
+		#will go with first option detected as filled
 		for option in self.question_options:
 			if option.is_filled():
 				self.answer_choice = option
@@ -174,10 +181,31 @@ class Question:
 
 class Exam:
 
-	def __init__(self, questions, num_questions, exam_image):
+	def __init__(self, questions, num_questions, exam_image, first_name, last_name, student_id):
 		self.exam_image = exam_image
 		self.questions = questions #list of questions
 		self.num_questions = num_questions
+		self.first_name = first_name
+		self.last_name = last_name
+		self.student_id = student_id
+
+	def get_first_name(self):
+		return self.first_name
+
+	def set_first_name(self, firstname):
+		self.first_name = firstname
+
+	def get_last_name(self):
+		return self.last_name
+
+	def set_last_name(self, lastname):
+		self.last_name = lastname
+
+	def get_student_id(self):
+		return self.student_id
+
+	def set_student_id(self, studentid):
+		self.student_id = studentid
 
 	def get_image(self):
 		return self.exam_image
@@ -223,6 +251,12 @@ class Exam:
 		for i in range(len(self.questions)):
 			chosen_answers.append([i+1,self.questions[i].get_chosen_answer()])
 		return chosen_answers
+
+	def get_answers_json(self):
+		temp_dict = {}
+		for answer in self.get_chosen_answers():
+			temp_dict[answer[0]] = answer[1]
+		return temp_dict
 
 	def print_chosen_answers(self):
 		for i in range(len(self.questions)):
