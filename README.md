@@ -10,7 +10,7 @@ This OpenCV-based Python project can automatically grade exams from provided ima
 - **Custom Answer Keys**: A custom answer key can be provided via **.csv** file.
 - **Visual Feedback**: A graded exam image is generated for each exam. Graded exam images have correct answers circled in green and wrong answers in red (color-coded to provide extra visual feedback).
 - **Robust Detection**: Will detect chosen answers even if the answer-circle boundary is broken (drawn over).
-- **Score Storage**: Scores are stored to a Firebase database, enabling easy data export and retrieval for grade-input purposes.
+- **Score Storage**: Scores are stored in a Firebase database, enabling easy data export and retrieval for grade-input purposes.
 
 ## Table of Contents
 
