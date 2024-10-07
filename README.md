@@ -14,11 +14,11 @@ This OpenCV-based Python project can automatically grade exams from provided ima
 
 ## Table of Contents
 
-- [Getting Started](##getting-started)
-- [Requirements](###requirements)
-- [Setup](###setup)
-- [Usage](###usage)
-- [Examples](##Examples)
+- [Getting Started](#getting-started)
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Examples](#Examples)
 ## Getting-Started
 
 Follow the instructions below to set up and run the project on your own machine.
